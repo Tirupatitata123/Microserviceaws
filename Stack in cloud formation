@@ -1,0 +1,183 @@
+Good question — this is one of those **core CloudFormation concepts** that everything else builds on.
+
+---
+
+## What is a *stack* in CloudFormation?
+
+A **CloudFormation stack** is basically **a collection of AWS resources managed as a single unit**.
+
+You describe *what you want* in a CloudFormation template (YAML/JSON), and when you create a **stack**, AWS:
+
+* Creates all those resources
+* Tracks them together
+* Manages their lifecycle together
+
+Think of a **stack = deployed template**.
+
+---
+
+## Simple analogy 🧠
+
+Imagine a stack like a **folder** 📁
+Inside the folder are:
+
+* EC2 instances
+* VPCs
+* Load balancers
+* EKS clusters
+* IAM roles
+
+Instead of creating/deleting each resource one by one, you:
+
+* Create the folder (stack)
+* AWS handles everything inside it
+
+---
+
+## Stack lifecycle
+
+A stack can be:
+
+* **Created** → resources are created
+* **Updated** → resources are modified
+* **Deleted** → *all* resources in the stack are deleted (unless protected)
+
+---
+
+## Example
+
+### CloudFormation template
+
+```yaml
+Resources:
+  MyEC2:
+    Type: AWS::EC2::Instance
+  MyS3:
+    Type: AWS::S3::Bucket
+```
+
+### When you create the stack:
+
+```
+Stack name: demo-stack
+```
+
+AWS creates:
+
+* EC2 instance
+* S3 bucket
+
+All under **demo-stack**.
+
+---
+
+## Why stacks are important
+
+### 1️⃣ Infrastructure as Code
+
+Your infra lives in Git:
+
+* Versioned
+* Reviewable
+* Reproducible
+
+### 2️⃣ Safe updates
+
+CloudFormation knows:
+
+* What changed
+* What needs to be replaced vs updated
+
+### 3️⃣ Clean deletion
+
+```bash
+aws cloudformation delete-stack --stack-name demo-stack
+```
+
+➡ everything goes away cleanly
+
+---
+
+## Types of stacks
+
+### 🔹 Regular stack
+
+* Single template
+* Small to medium infra
+
+### 🔹 Nested stacks
+
+* Stack inside another stack
+* Used for large architectures
+
+Example:
+
+```
+eks-stack
+ ├── vpc-stack
+ ├── iam-stack
+ └── nodegroup-stack
+```
+
+---
+
+### 🔹 StackSets
+
+* Deploy same stack to:
+
+  * Multiple accounts
+  * Multiple regions
+
+Used in enterprise setups.
+
+---
+
+## Stack vs Template (important!)
+
+| Template       | Stack             |
+| -------------- | ----------------- |
+| Blueprint      | Actual deployment |
+| YAML/JSON file | Running resources |
+| Stored in Git  | Lives in AWS      |
+
+---
+
+## CloudFormation tracks state for you
+
+Stacks maintain:
+
+* Resource dependencies
+* Rollback on failure
+* Drift detection (manual changes)
+
+If something fails during creation → CloudFormation **rolls back automatically**.
+
+---
+
+## Real-world example (EKS)
+
+You might have:
+
+* `eks-cluster.yaml` → stack name: `eks-cluster`
+* `eks-nodes.yaml` → stack name: `eks-nodegroup`
+
+Each stack:
+
+* Can be updated independently
+* Is still managed cleanly
+
+---
+
+## Key takeaway 🎯
+
+> A **CloudFormation stack** is the **managed, running instance of your infrastructure template**, treated as one logical unit.
+
+---
+
+If you want, I can:
+
+* Show a **real EKS stack breakdown**
+* Explain **stack vs Terraform modules**
+* Walk through **updating vs replacing resources**
+
+Just tell me 👍
